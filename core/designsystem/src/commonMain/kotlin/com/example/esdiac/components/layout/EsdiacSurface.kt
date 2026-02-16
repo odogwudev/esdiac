@@ -46,7 +46,6 @@ fun EsdiacSurface(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp)
-                        .verticalScroll(rememberScrollState())
                 ) {
                     content()
                 }
