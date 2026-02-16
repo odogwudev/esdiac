@@ -34,27 +34,21 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include("data")
-
+// Main app module
 include(":composeApp")
-include("database")
-include(":core:presentation")
-include(":core:domain")
-include("domain")
+
+// Core modules
 include(":core:data")
+include(":core:domain")
 include(":core:designsystem")
-include("domain")
-include("designsystem")
-include(":features:auth:presentation")
+include(":core:presentation")
+
+// Feature modules - Auth
 include(":features:auth:domain")
+include(":features:auth:presentation")
+
+// Feature modules - TopUp
 include(":features:topup:data")
 include(":features:topup:database")
 include(":features:topup:domain")
 include(":features:topup:presentation")
-include("domain")
-include("presentation")
-include("auth")
-include("domain:api")
-include("presentation")
-include("domain:impl")
-include("domain:glue")

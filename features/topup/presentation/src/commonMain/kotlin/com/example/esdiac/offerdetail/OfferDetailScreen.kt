@@ -1,4 +1,4 @@
-package com.example.esdiac
+package com.example.esdiac.offerdetail
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -7,34 +7,28 @@ import com.example.esdiac.components.buttons.EsdiacButton
 import com.example.esdiac.components.layout.EsdiacAdaptiveFormLayout
 import com.example.esdiac.components.layout.EsdiacSnackbarScaffold
 
-
 @Composable
-fun ScreenARoot(
-    initialOfferId: String?,
-    onForwardClick: () -> Unit,
+fun OfferDetailScreenRoot(
+    offerId: String?,
     onBackClick: () -> Unit
 ) {
     EsdiacSnackbarScaffold {
         EsdiacAdaptiveFormLayout(
-            headerText =  ("Welcome to Screen A"),
+            headerText = "Offer Details",
             logo = {}
         ) {
+            // Display offer ID or placeholder
             EsdiacButton(
-                text = "Go to Screen B",
-                onClick = {
-                 onForwardClick()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+                text = "Offer ID: ${offerId ?: "No offer selected"}",
+                onClick = {},
+                modifier = Modifier.fillMaxWidth()
             )
             EsdiacButton(
-                text = "Go to Screen",
-                onClick = {
-                 onBackClick()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+                text = "Back to Offers",
+                onClick = onBackClick,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
+

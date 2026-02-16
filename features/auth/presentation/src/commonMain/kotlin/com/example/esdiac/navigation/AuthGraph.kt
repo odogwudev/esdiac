@@ -3,7 +3,6 @@ package com.example.esdiac.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.example.esdiac.screena.ScreenARoot
 import com.example.esdiac.screenb.ScreenBRoot
@@ -32,14 +31,7 @@ fun NavGraphBuilder.authGraph(
                     navController.navigate(AuthGraphRoutes.ScreenC(it))
                 },
                 onBackClick = {
-                    navController.navigate(AuthGraphRoutes.ScreenB) {
-                        popUpTo(AuthGraphRoutes.ScreenA) {
-                            inclusive = true
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navController.popBackStack()
                 }
             )
         }
@@ -49,14 +41,7 @@ fun NavGraphBuilder.authGraph(
                     onLoginSuccess()
                 },
                 onBackClick = {
-                    navController.navigate(AuthGraphRoutes.ScreenC) {
-                        popUpTo(AuthGraphRoutes.ScreenB) {
-                            inclusive = true
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navController.popBackStack()
                 }
             )
         }

@@ -1,0 +1,58 @@
+package com.example.esdiac
+
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import com.example.esdiac.di.desktopModule
+import com.example.esdiac.di.initKoin
+import com.example.esdiac.theme.rememberAppTheme
+import com.example.esdiac.windows.EsdiacWindow
+import org.koin.compose.koinInject
+
+fun main(args: Array<String>) {
+    initKoin {
+        modules(desktopModule)
+    }
+
+    application {
+        val applicationStateHolder = koinInject<ApplicationStateHolder>()
+        val applicationState by applicationStateHolder.state.collectAsState()
+        val windows = applicationState.windows
+
+
+        LaunchedEffect(windows) {
+            if(windows.isEmpty()) {
+                exitApplication()
+            }
+        }
+
+        val appTheme = rememberAppTheme(applicationState.themePreference)
+
+        for(window in windows) {
+            key(window.id) {
+                EsdiacWindow(
+                    appTheme = appTheme,
+                    onCloseRequest = {
+                        applicationStateHolder.onWindowCloseRequest(window.id)
+                    },
+                    onAddWindowClick = applicationStateHolder::onAddWindowClick,
+                    onFocusChanged = { focused ->
+                        applicationStateHolder.onWindowFocusChanged(window.id, focused)
+                    }
+                )
+            }
+        }
+
+        EsdiacTrayMenu(
+            state = applicationState.trayState,
+            themePreferenceFromAppSettings = applicationState.themePreference,
+            onThemePreferenceClick = applicationStateHolder::onThemePreferenceClick
+        )
+    }
+}

@@ -6,7 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import androidx.navigation.toRoute
-import com.example.esdiac.ScreenARoot
+import com.example.esdiac.offerdetail.OfferDetailScreenRoot
+import com.example.esdiac.offerlist.OfferListScreenRoot
 import kotlinx.serialization.Serializable
 
 sealed interface TopUpGraphRoutes {
@@ -14,7 +15,10 @@ sealed interface TopUpGraphRoutes {
     data object Graph: TopUpGraphRoutes
 
     @Serializable
-    data class OfferListDetailRoute(val offerId: String? = null): TopUpGraphRoutes
+    data object OfferListRoute: TopUpGraphRoutes
+
+    @Serializable
+    data class OfferDetailRoute(val offerId: String? = null): TopUpGraphRoutes
 }
 
 fun NavGraphBuilder.topUpGraph(
@@ -22,20 +26,32 @@ fun NavGraphBuilder.topUpGraph(
     onLogout: () -> Unit
 ) {
     navigation<TopUpGraphRoutes.Graph>(
-        startDestination = TopUpGraphRoutes.OfferListDetailRoute(null)
+        startDestination = TopUpGraphRoutes.OfferListRoute
     ) {
-        composable<TopUpGraphRoutes.OfferListDetailRoute>(
+        // Screen 1: Offer List
+        composable<TopUpGraphRoutes.OfferListRoute> {
+            OfferListScreenRoot(
+                onOfferClick = { offerId ->
+                    navController.navigate(TopUpGraphRoutes.OfferDetailRoute(offerId))
+                },
+                onLogoutClick = onLogout
+            )
+        }
+
+        // Screen 2: Offer Detail
+        composable<TopUpGraphRoutes.OfferDetailRoute>(
             deepLinks = listOf(
                 navDeepLink {
                     uriPattern = "esdiac://offer_detail/{offerId}"
                 }
             )
         ) { backStackEntry ->
-            val route = backStackEntry.toRoute<TopUpGraphRoutes.OfferListDetailRoute>()
-            ScreenARoot(
-                initialOfferId = route.offerId,
-                onForwardClick = {},
-                onBackClick = onLogout,
+            val route = backStackEntry.toRoute<TopUpGraphRoutes.OfferDetailRoute>()
+            OfferDetailScreenRoot(
+                offerId = route.offerId,
+                onBackClick = {
+                    navController.popBackStack()
+                }
             )
         }
     }
